@@ -1,0 +1,67 @@
+// vim: ft=groovy:sw=2:ts=2:expandtab
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'nexus'
+
+group = 'co.tomlee.gradle.plugins'
+version = '0.0.1'
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile gradleApi()
+  compile 'org.eclipse.jgit:org.eclipse.jgit:3.4.1.201406201815-r'
+  compile 'org.apache.commons:commons-lang3:3.3.2'
+  compile 'com.google.guava:guava:17.0'
+  testCompile "junit:junit:4.11"
+}
+
+modifyPom {
+  project {
+    name 'gradle-release-plugin'
+    description 'A Gradle release plugin'
+    url 'https://github.com/thomaslee/gradle-release-plugin'
+    inceptionYear '2014'
+
+    scm {
+      url 'https://github.com/thomaslee/gradle-release-plugin'
+      connection 'scm:git://github.com/thomaslee/gradle-release-plugin.git'
+      developerConnection 'scm:git@github.com:thomaslee/gradle-release-plugin.git'
+    }
+
+    licenses {
+      license {
+        name 'Apache License 2.0'
+        url 'http://opensource.org/licenses/Apache-2.0'
+        distribution 'repo'
+      }
+    }
+
+    developers {
+      developer {
+        id 'thomaslee'
+        name 'Tom Lee'
+        email 'github@tomlee.co'
+      }
+    }
+  }
+}
+
+nexus {
+  sign = true
+}
+
