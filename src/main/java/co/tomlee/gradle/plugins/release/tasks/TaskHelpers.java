@@ -1,8 +1,11 @@
-package co.tomlee.gradle.plugins.release;
+package co.tomlee.gradle.plugins.release.tasks;
 
+import co.tomlee.gradle.plugins.release.ReleaseConvention;
+import co.tomlee.gradle.plugins.release.ReleasePlugin;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
@@ -27,21 +30,17 @@ public final class TaskHelpers {
         return value;
     }
 
-    public static ReleaseConvention getReleaseConvention(final Project project) {
+    public static ReleaseConvention releaseConvention(final Project project) {
         return (ReleaseConvention) project.getConvention().getByName("release");
     }
 
     public static String getThisVersion(final Project project) throws IOException {
-        final ReleaseConvention releaseConvention = getReleaseConvention(project);
+        final ReleaseConvention releaseConvention = releaseConvention(project);
 
-        final File propertiesFile = releaseConvention.getPropertiesFile();
+        final File propertiesFile = project.file(releaseConvention.getPropertiesFile());
         final Properties properties = new Properties();
-        final FileReader reader = new FileReader(propertiesFile);
-        try {
+        try (final FileReader reader = new FileReader(propertiesFile)) {
             properties.load(reader);
-        }
-        finally {
-            reader.close();
         }
         final String version = properties.getProperty(releaseConvention.getVersionProperty());
         if (StringUtils.isEmpty(version)) {
@@ -50,10 +49,20 @@ public final class TaskHelpers {
         return version;
     }
 
-    public static void setVersion(final Project project, final String newVersion) throws IOException {
-        final ReleaseConvention releaseConvention = getReleaseConvention(project);
+    public static String getThisVersionWithoutSnapshot(final Project project) throws IOException {
+        final String version = getThisVersion(project);
 
-        final File propertiesFile = releaseConvention.getPropertiesFile();
+        if (version.endsWith("-SNAPSHOT")) {
+            return version.substring(0, version.length()-9);
+        }
+        return version;
+    }
+
+    public static void setVersion(final Project project, final String newVersion) throws IOException {
+        final ReleaseConvention releaseConvention = releaseConvention(project);
+
+        final String propertiesFilePath = releaseConvention.getPropertiesFile();
+        final File propertiesFile = project.file(propertiesFilePath);
 
         project.setVersion(newVersion);
 
@@ -69,7 +78,20 @@ public final class TaskHelpers {
         }
     }
 
-    public static Repository getGitRepository(final Project project) {
-        return (Repository) project.getProperties().get(ReleasePlugin.GIT_REPO_PROPERTY);
+    public static Repository repository(final Project project) {
+        return (Repository) project.getExtensions().getByName(ReleasePlugin.GIT_REPO_PROPERTY);
+    }
+
+    public static Git git(final Project project) {
+        return (Git) project.getExtensions().getByName(ReleasePlugin.GIT_PROPERTY);
+    }
+
+    public static void commitPropertiesFile(final Project project, final String commitMessage) throws Exception {
+        final Git git = git(project);
+        final ReleaseConvention releaseConvention = releaseConvention(project);
+        git.commit()
+                .setOnly(releaseConvention.getPropertiesFile())
+                .setMessage(commitMessage)
+                .call();
     }
 }
