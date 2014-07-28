@@ -6,6 +6,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +46,11 @@ public class ReleasePlugin implements Plugin<Project> {
                 project.getTasks().create("releaseEndTransaction", ReleaseEndTransactionTask.class);
         releaseCommitTask.dependsOn(releaseNextVersionTask);
 
-        project.getTasks().create("release").dependsOn(releaseCommitTask);
+        final Task releaseTask = project.getTasks().create("release").dependsOn(releaseCommitTask);
+        releaseTask.setDescription("Cut a release from HEAD");
 
-        project.getTasks().create("releaseRollback", ReleaseRollbackTransactionTask.class);
+        final Task rollbackTask = project.getTasks().create("releaseRollback", ReleaseRollbackTransactionTask.class);
+        rollbackTask.setDescription("Rollback a failed release");
     }
 
     private final Repository buildRepository(final Project project) {
