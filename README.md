@@ -16,7 +16,7 @@ Only supports Git right now.
 
     buildscript {
         repositories {
-            mavenLocal()
+            mavenCentral()
         }
 
         dependencies {
