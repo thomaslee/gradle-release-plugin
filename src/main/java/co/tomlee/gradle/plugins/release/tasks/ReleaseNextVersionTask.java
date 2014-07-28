@@ -9,7 +9,7 @@ import java.text.MessageFormat;
 
 import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.*;
 
-public class NextSnapshotTask extends DefaultTask {
+public class ReleaseNextVersionTask extends DefaultTask {
     @TaskAction
     public void updateVersion() throws Exception {
         String version = findProperty(getProject(), "gradle.release.nextVersion", null);
@@ -33,7 +33,7 @@ public class NextSnapshotTask extends DefaultTask {
 
         final ReleaseConvention releaseConvention = releaseConvention(getProject());
         final String commitMessage =
-            MessageFormat.format(releaseConvention.getNextSnapshotCommitMessage(), nextVersion);
+            MessageFormat.format(releaseConvention.getNextVersionCommitMessageFormat(), nextVersion);
         commitPropertiesFile(getProject(), commitMessage);
     }
 }

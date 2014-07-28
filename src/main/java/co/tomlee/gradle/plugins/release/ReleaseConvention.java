@@ -7,7 +7,7 @@ import java.io.File;
 public class ReleaseConvention {
     private Project project;
 
-    private String propertiesFile;
+    private String propertiesFile = "gradle.properties";
     private String versionProperty = "version";
     private String preTagCommitMessage = "[release] cutting release: v{0}";
     private String tagFormat = "v{0}";
@@ -22,9 +22,6 @@ public class ReleaseConvention {
     }
 
     public String getPropertiesFile() {
-        if (propertiesFile == null) {
-            propertiesFile = "gradle.properties";
-        }
         final File file = project.file(propertiesFile);
         if (!file.exists()) {
             throw new IllegalStateException(file + " does not exist");
@@ -40,27 +37,27 @@ public class ReleaseConvention {
         return versionProperty;
     }
 
-    public String getPreTagCommitMessage() {
+    public String getThisVersionCommitMessageFormat() {
         return preTagCommitMessage;
     }
 
-    public void preTagCommitMessage(final String preTagCommitMessage) {
+    public void thisVersionCommitMessageFormat(final String preTagCommitMessage) {
         this.preTagCommitMessage = preTagCommitMessage;
     }
 
-    public String getTagFormat() {
+    public String getReleaseTagFormat() {
         return tagFormat;
     }
 
-    public void tagFormat(final String tagFormat) {
+    public void releaseTagFormat(final String tagFormat) {
         this.tagFormat = tagFormat;
     }
 
-    public String getNextSnapshotCommitMessage() {
+    public String getNextVersionCommitMessageFormat() {
         return nextSnapshotCommitMessage;
     }
 
-    public void nextSnapshotCommitMessage(final String nextSnapshotCommitMessage) {
+    public void nextVersionCommitMessageFormat(final String nextSnapshotCommitMessage) {
         this.nextSnapshotCommitMessage = nextSnapshotCommitMessage;
     }
 }

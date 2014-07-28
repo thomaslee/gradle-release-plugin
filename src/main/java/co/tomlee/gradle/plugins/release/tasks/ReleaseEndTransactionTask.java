@@ -10,8 +10,8 @@ import java.io.File;
 
 import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.*;
 
-public class ReleaseCommitTransactionTask extends DefaultTask {
-    private final Logger log = Logging.getLogger(ReleaseCommitTransactionTask.class);
+public class ReleaseEndTransactionTask extends DefaultTask {
+    private final Logger log = Logging.getLogger(ReleaseEndTransactionTask.class);
 
     @TaskAction
     public void removeTag() throws Exception {

@@ -8,7 +8,7 @@ import org.gradle.api.tasks.TaskAction;
 
 import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.repository;
 
-public class EnsureCleanWorkspaceTask extends DefaultTask {
+public class ReleaseEnsureCleanWorkspaceTask extends DefaultTask {
     @TaskAction
     public void release() throws Exception {
         final Repository repo = repository(getProject());

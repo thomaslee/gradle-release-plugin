@@ -40,7 +40,7 @@ public class ReleaseRollbackTransactionTask extends DefaultTask {
         final String sha = parts[0];
         final String version = parts[1];
 
-        final String tag = MessageFormat.format(releaseConvention.getTagFormat(), version);
+        final String tag = MessageFormat.format(releaseConvention.getReleaseTagFormat(), version);
         if (repo.resolve(tag) != null) {
             log.info("Deleting tag: " + tag);
             git.tagDelete().setTags(tag).call();

@@ -27,23 +27,23 @@ public class ReleasePlugin implements Plugin<Project> {
         project.getExtensions().add(GIT_REPO_PROPERTY, repo);
         project.getExtensions().add(GIT_PROPERTY, git);
 
-        final EnsureCleanWorkspaceTask ensureCleanWorkspaceTask =
-                project.getTasks().create("releaseEnsureCleanWorkspace", EnsureCleanWorkspaceTask.class);
+        final ReleaseEnsureCleanWorkspaceTask releaseEnsureCleanWorkspaceTask =
+                project.getTasks().create("releaseEnsureCleanWorkspace", ReleaseEnsureCleanWorkspaceTask.class);
         final ReleaseBeginTransactionTask releaseBeginTransactionTask =
                 project.getTasks().create("releaseBeginTransaction", ReleaseBeginTransactionTask.class);
-        releaseBeginTransactionTask.dependsOn(ensureCleanWorkspaceTask);
-        final RemoveSnapshotSuffixTask removeSnapshotSuffixTask =
-                project.getTasks().create("releaseRemoveSnapshotSuffix", RemoveSnapshotSuffixTask.class);
-        removeSnapshotSuffixTask.dependsOn(releaseBeginTransactionTask);
+        releaseBeginTransactionTask.dependsOn(releaseEnsureCleanWorkspaceTask);
+        final ReleaseRemoveSnapshotSuffixTask releaseRemoveSnapshotSuffixTask =
+                project.getTasks().create("releaseRemoveSnapshotSuffix", ReleaseRemoveSnapshotSuffixTask.class);
+        releaseRemoveSnapshotSuffixTask.dependsOn(releaseBeginTransactionTask);
         final ReleaseTagTask releaseTagTask =
                 project.getTasks().create("releaseTag", ReleaseTagTask.class);
-        releaseTagTask.dependsOn(removeSnapshotSuffixTask);
-        final NextSnapshotTask nextSnapshotTask =
-                project.getTasks().create("releaseNextSnapshot", NextSnapshotTask.class);
-        nextSnapshotTask.dependsOn(releaseTagTask);
-        final ReleaseCommitTransactionTask releaseCommitTask =
-                project.getTasks().create("releaseCommitTransaction", ReleaseCommitTransactionTask.class);
-        releaseCommitTask.dependsOn(nextSnapshotTask);
+        releaseTagTask.dependsOn(releaseRemoveSnapshotSuffixTask);
+        final ReleaseNextVersionTask releaseNextVersionTask =
+                project.getTasks().create("releaseNextVersion", ReleaseNextVersionTask.class);
+        releaseNextVersionTask.dependsOn(releaseTagTask);
+        final ReleaseEndTransactionTask releaseCommitTask =
+                project.getTasks().create("releaseEndTransaction", ReleaseEndTransactionTask.class);
+        releaseCommitTask.dependsOn(releaseNextVersionTask);
 
         project.getTasks().create("release").dependsOn(releaseCommitTask);
 

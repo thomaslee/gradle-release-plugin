@@ -15,6 +15,6 @@ public class ReleaseTagTask extends DefaultTask {
         final ReleaseConvention releaseConvention = releaseConvention(getProject());
         final Git git = git(getProject());
 
-        git.tag().setName(MessageFormat.format(releaseConvention.getTagFormat(), getVersion(getProject()))).call();
+        git.tag().setName(MessageFormat.format(releaseConvention.getReleaseTagFormat(), getVersion(getProject()))).call();
     }
 }
