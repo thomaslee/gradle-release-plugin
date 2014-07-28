@@ -11,6 +11,7 @@ group = 'co.tomlee.gradle.plugins'
 buildscript {
   repositories {
     jcenter()
+    mavenLocal()
   }
 
   dependencies {
