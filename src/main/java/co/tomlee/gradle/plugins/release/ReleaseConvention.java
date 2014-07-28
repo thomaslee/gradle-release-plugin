@@ -46,11 +46,11 @@ public class ReleaseConvention {
         this.preTagCommitMessage = preTagCommitMessage;
     }
 
-    public String getReleaseTagFormat() {
+    public String getTagFormat() {
         return tagFormat;
     }
 
-    public void releaseTagFormat(final String tagFormat) {
+    public void tagFormat(final String tagFormat) {
         this.tagFormat = tagFormat;
     }
 
