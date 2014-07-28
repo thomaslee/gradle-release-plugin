@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.getThisVersionWithoutSnapshot;
+import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.getVersionWithoutSnapshot;
 import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.git;
 
 public class ReleaseBeginTransactionTask extends DefaultTask {
@@ -21,7 +21,7 @@ public class ReleaseBeginTransactionTask extends DefaultTask {
         final File transactionFile =
             new File(git.getRepository().getDirectory().getParentFile(), ".releaseTransaction");
         final PrintWriter out = new PrintWriter(new FileWriter(transactionFile));
-        final String version = getThisVersionWithoutSnapshot(getProject());
+        final String version = getVersionWithoutSnapshot(getProject());
         try {
             out.write(sha);
             out.write(";");

@@ -53,7 +53,7 @@ public final class TaskHelpers {
         return version;
     }
 
-    public static String getThisVersionWithoutSnapshot(final Project project) throws IOException {
+    public static String getVersionWithoutSnapshot(final Project project) throws IOException {
         final String version = getVersion(project);
 
         if (version.endsWith("-SNAPSHOT")) {
