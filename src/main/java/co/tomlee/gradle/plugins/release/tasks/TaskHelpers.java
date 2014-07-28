@@ -38,7 +38,7 @@ public final class TaskHelpers {
     public static String getVersion(final Project project) throws IOException {
         final ReleaseConvention releaseConvention = releaseConvention(project);
 
-        String version = findProperty(project, "gradle.release.thisVersion", null);
+        String version = findProperty(project, "gradle.release.version", null);
         if (StringUtils.isEmpty(version)) {
             final File propertiesFile = project.file(releaseConvention.getPropertiesFile());
             final Properties properties = new Properties();
@@ -73,7 +73,7 @@ public final class TaskHelpers {
         try {
             project.getAnt().invokeMethod("replaceregexp", ImmutableMap.<String, Object>of(
                     "file", propertiesFile,
-                    "match", "^(\\s*)" + Pattern.quote(releaseConvention.getVersionProperty()) + "(\\s*)=(\\s*)" + Pattern.quote(getVersion(project)),
+                    "match", "^(\\s*)" + Pattern.quote(releaseConvention.getVersionProperty()) + "(\\s*)=(\\s*).*",
                     "replace", "\\1" + releaseConvention.getVersionProperty() + "\\2=\\3" + newVersion,
                     "byline", true));
         }

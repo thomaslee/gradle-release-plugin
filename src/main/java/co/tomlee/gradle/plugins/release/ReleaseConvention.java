@@ -12,6 +12,7 @@ public class ReleaseConvention {
     private String preTagCommitMessage = "[release] cutting release: v{0}";
     private String tagFormat = "v{0}";
     private String nextSnapshotCommitMessage = "[release] bumping version: v{0}";
+    private boolean usingSnapshots = true;
 
     public void setProject(final Project project) {
         this.project = project;
@@ -59,5 +60,13 @@ public class ReleaseConvention {
 
     public void nextVersionCommitMessageFormat(final String nextSnapshotCommitMessage) {
         this.nextSnapshotCommitMessage = nextSnapshotCommitMessage;
+    }
+
+    public boolean isUsingSnapshots() {
+        return usingSnapshots;
+    }
+
+    public void usingSnapshots(final boolean snapshot) {
+        this.usingSnapshots = snapshot;
     }
 }

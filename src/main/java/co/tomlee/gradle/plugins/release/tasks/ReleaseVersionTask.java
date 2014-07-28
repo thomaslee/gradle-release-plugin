@@ -9,7 +9,7 @@ import java.text.MessageFormat;
 
 import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.*;
 
-public class ReleaseRemoveSnapshotSuffixTask extends DefaultTask {
+public class ReleaseVersionTask extends DefaultTask {
     @TaskAction
     public void removeSnapshotSuffix() throws Exception {
         String version = getVersion(getProject());

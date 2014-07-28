@@ -32,12 +32,12 @@ public class ReleasePlugin implements Plugin<Project> {
         final ReleaseBeginTransactionTask releaseBeginTransactionTask =
                 project.getTasks().create("releaseBeginTransaction", ReleaseBeginTransactionTask.class);
         releaseBeginTransactionTask.dependsOn(releaseEnsureCleanWorkspaceTask);
-        final ReleaseRemoveSnapshotSuffixTask releaseRemoveSnapshotSuffixTask =
-                project.getTasks().create("releaseRemoveSnapshotSuffix", ReleaseRemoveSnapshotSuffixTask.class);
-        releaseRemoveSnapshotSuffixTask.dependsOn(releaseBeginTransactionTask);
+        final ReleaseVersionTask releaseVersionTask =
+                project.getTasks().create("releaseVersion", ReleaseVersionTask.class);
+        releaseVersionTask.dependsOn(releaseBeginTransactionTask);
         final ReleaseTagTask releaseTagTask =
                 project.getTasks().create("releaseTag", ReleaseTagTask.class);
-        releaseTagTask.dependsOn(releaseRemoveSnapshotSuffixTask);
+        releaseTagTask.dependsOn(releaseVersionTask);
         final ReleaseNextVersionTask releaseNextVersionTask =
                 project.getTasks().create("releaseNextVersion", ReleaseNextVersionTask.class);
         releaseNextVersionTask.dependsOn(releaseTagTask);
