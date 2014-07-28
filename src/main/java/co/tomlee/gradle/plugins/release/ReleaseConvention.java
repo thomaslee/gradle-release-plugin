@@ -23,7 +23,7 @@ public class ReleaseConvention {
 
     public String getPropertiesFile() {
         if (propertiesFile == null) {
-            propertiesFile = "build.properties";
+            propertiesFile = "gradle.properties";
         }
         final File file = project.file(propertiesFile);
         if (!file.exists()) {
