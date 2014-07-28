@@ -11,7 +11,7 @@ import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.*;
 public class RemoveSnapshotSuffixTask extends DefaultTask {
     @TaskAction
     public void removeSnapshotSuffix() throws Exception {
-        String version = getThisVersion(getProject());
+        String version = getVersion(getProject());
         if (version.endsWith("-SNAPSHOT")) {
             version = getThisVersionWithoutSnapshot(getProject());
             setVersion(getProject(), version);

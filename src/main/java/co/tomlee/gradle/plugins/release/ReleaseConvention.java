@@ -9,9 +9,9 @@ public class ReleaseConvention {
 
     private String propertiesFile;
     private String versionProperty = "version";
-    private String preTagCommitMessage = "[release] preparing release";
+    private String preTagCommitMessage = "[release] cutting release: v{0}";
     private String tagFormat = "v{0}";
-    private String nextSnapshotCommitMessage = "[release] preparing next snapshot";
+    private String nextSnapshotCommitMessage = "[release] bumping version: v{0}";
 
     public void setProject(final Project project) {
         this.project = project;

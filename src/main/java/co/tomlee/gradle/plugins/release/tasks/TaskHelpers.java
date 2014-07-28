@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public final class TaskHelpers {
     private TaskHelpers() {}
@@ -34,23 +35,26 @@ public final class TaskHelpers {
         return (ReleaseConvention) project.getConvention().getByName("release");
     }
 
-    public static String getThisVersion(final Project project) throws IOException {
+    public static String getVersion(final Project project) throws IOException {
         final ReleaseConvention releaseConvention = releaseConvention(project);
 
-        final File propertiesFile = project.file(releaseConvention.getPropertiesFile());
-        final Properties properties = new Properties();
-        try (final FileReader reader = new FileReader(propertiesFile)) {
-            properties.load(reader);
-        }
-        final String version = properties.getProperty(releaseConvention.getVersionProperty());
+        String version = findProperty(project, "gradle.release.thisVersion", null);
         if (StringUtils.isEmpty(version)) {
-            throw new IllegalStateException("No version number found in " + propertiesFile);
+            final File propertiesFile = project.file(releaseConvention.getPropertiesFile());
+            final Properties properties = new Properties();
+            try (final FileReader reader = new FileReader(propertiesFile)) {
+                properties.load(reader);
+            }
+            version = properties.getProperty(releaseConvention.getVersionProperty());
+            if (StringUtils.isEmpty(version)) {
+                throw new IllegalStateException("No version number found in " + propertiesFile);
+            }
         }
         return version;
     }
 
     public static String getThisVersionWithoutSnapshot(final Project project) throws IOException {
-        final String version = getThisVersion(project);
+        final String version = getVersion(project);
 
         if (version.endsWith("-SNAPSHOT")) {
             return version.substring(0, version.length()-9);
@@ -67,14 +71,14 @@ public final class TaskHelpers {
         project.setVersion(newVersion);
 
         try {
-            project.getAnt().invokeMethod("replace", ImmutableMap.<String, Object>of(
+            project.getAnt().invokeMethod("replaceregexp", ImmutableMap.<String, Object>of(
                     "file", propertiesFile,
-                    "token", releaseConvention.getVersionProperty() + "=" + getThisVersion(project),
-                    "value", releaseConvention.getVersionProperty() + "=" + newVersion,
-                    "failOnNoReplacements", true));
+                    "match", "^(\\s*)" + Pattern.quote(releaseConvention.getVersionProperty()) + "(\\s*)=(\\s*)" + Pattern.quote(getVersion(project)),
+                    "replace", "\\1" + releaseConvention.getVersionProperty() + "\\2=\\3" + newVersion,
+                    "byline", true));
         }
         catch (BuildException e) {
-            throw new GradleException("Unable to set new version in properties file");
+            throw new GradleException("Unable to set new version in properties file", e);
         }
     }
 

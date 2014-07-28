@@ -3,7 +3,6 @@ package co.tomlee.gradle.plugins.release.tasks;
 import co.tomlee.gradle.plugins.release.ReleaseConvention;
 import org.eclipse.jgit.api.Git;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 import java.text.MessageFormat;
@@ -16,8 +15,6 @@ public class ReleaseTagTask extends DefaultTask {
         final ReleaseConvention releaseConvention = releaseConvention(getProject());
         final Git git = git(getProject());
 
-        git.tag().setName(MessageFormat.format(releaseConvention.getTagFormat(), getThisVersion(getProject()))).call();
-
-        throw new GradleException();
+        git.tag().setName(MessageFormat.format(releaseConvention.getTagFormat(), getVersion(getProject()))).call();
     }
 }
