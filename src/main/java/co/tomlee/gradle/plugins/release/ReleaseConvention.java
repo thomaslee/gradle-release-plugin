@@ -13,6 +13,7 @@ public class ReleaseConvention {
     private String tagFormat = "v{0}";
     private String nextSnapshotCommitMessage = "[release] bumping version: v{0}";
     private boolean usingSnapshots = true;
+    private boolean ensureWorkspaceClean = true;
 
     public void setProject(final Project project) {
         this.project = project;
@@ -68,5 +69,13 @@ public class ReleaseConvention {
 
     public void usingSnapshots(final boolean snapshot) {
         this.usingSnapshots = snapshot;
+    }
+
+    public boolean isEnsureWorkspaceClean() {
+        return ensureWorkspaceClean;
+    }
+
+    public void ensureWorkspaceClean(final boolean ensureWorkspaceClean) {
+        this.ensureWorkspaceClean = ensureWorkspaceClean;
     }
 }
