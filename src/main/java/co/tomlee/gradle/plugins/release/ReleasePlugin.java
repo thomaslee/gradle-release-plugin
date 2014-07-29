@@ -47,11 +47,11 @@ public class ReleasePlugin implements Plugin<Project> {
         releaseCommitTask.dependsOn(releaseNextVersionTask);
 
         final Task releaseTask = project.getTasks().create("release").dependsOn(releaseCommitTask);
-        releaseTask.setGroup("Release tasks");
+        releaseTask.setGroup("Release");
         releaseTask.setDescription("Cut a release from HEAD");
 
         final Task rollbackTask = project.getTasks().create("releaseRollback", ReleaseRollbackTransactionTask.class);
-        rollbackTask.setGroup("Release tasks");
+        rollbackTask.setGroup("Release");
         rollbackTask.setDescription("Rollback a failed release");
     }
 
