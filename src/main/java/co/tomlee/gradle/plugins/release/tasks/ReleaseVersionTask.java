@@ -26,7 +26,7 @@ public class ReleaseVersionTask extends DefaultTask {
         if (git.status().call().hasUncommittedChanges()) {
             final ReleaseConvention releaseConvention = releaseConvention(getProject());
             final String commitMessage =
-                MessageFormat.format(releaseConvention.getThisVersionCommitMessageFormat(), commitVersion);
+                MessageFormat.format(releaseConvention.getThisVersionCommitMessageFormat(), commitVersion, getProject().getName(), getProject().getPath());
             commitPropertiesFile(getProject(), commitMessage);
         }
     }

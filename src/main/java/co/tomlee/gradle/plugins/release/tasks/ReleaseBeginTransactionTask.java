@@ -1,7 +1,10 @@
 package co.tomlee.gradle.plugins.release.tasks;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -16,7 +19,17 @@ public class ReleaseBeginTransactionTask extends DefaultTask {
     public void tag() throws Exception {
         final Git git = git(getProject());
 
-        final String sha = git.getRepository().resolve("HEAD").name();
+        final Repository repository = git.getRepository();
+        if (repository == null) {
+            throw new GradleException("Failed to retrieve git repository");
+        }
+
+        final ObjectId head = repository.resolve("HEAD");
+        if (head == null) {
+            throw new GradleException("Failed to resolve git HEAD");
+        }
+
+        final String sha = head.name();
 
         final File transactionFile =
             new File(git.getRepository().getDirectory().getParentFile(), ".releaseTransaction");

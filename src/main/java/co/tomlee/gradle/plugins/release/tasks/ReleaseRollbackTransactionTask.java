@@ -36,6 +36,11 @@ public class ReleaseRollbackTransactionTask extends DefaultTask {
             return;
         }
         final String line = reader.readLine();
+        if (line == null) {
+            log.info("Nothing to do for rollback");
+            transactionFile.delete();
+            return;
+        }
         final String[] parts = line.split(";", 2);
         final String sha = parts[0];
         final String version = parts[1];

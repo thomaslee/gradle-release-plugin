@@ -13,6 +13,7 @@ import org.gradle.api.Project;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -65,8 +66,7 @@ public final class TaskHelpers {
     public static void setVersion(final Project project, final String newVersion) throws IOException {
         final ReleaseConvention releaseConvention = releaseConvention(project);
 
-        final String propertiesFilePath = releaseConvention.getPropertiesFile();
-        final File propertiesFile = project.file(propertiesFilePath);
+        final File propertiesFile = releaseConvention.getPropertiesFile();
 
         project.setVersion(newVersion);
 
@@ -93,8 +93,10 @@ public final class TaskHelpers {
     public static void commitPropertiesFile(final Project project, final String commitMessage) throws Exception {
         final Git git = git(project);
         final ReleaseConvention releaseConvention = releaseConvention(project);
+        final File propertiesFile = releaseConvention.getPropertiesFile();
+        final Path relativePath = project.getRootDir().toPath().relativize(propertiesFile.toPath());
         git.commit()
-                .setOnly(releaseConvention.getPropertiesFile())
+                .setOnly(relativePath.toString())
                 .setMessage(commitMessage)
                 .call();
     }

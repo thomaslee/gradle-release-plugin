@@ -7,11 +7,11 @@ import java.io.File;
 public class ReleaseConvention {
     private Project project;
 
-    private String propertiesFile = "gradle.properties";
+    private File propertiesFile;
     private String versionProperty = "version";
-    private String preTagCommitMessage = "[release] cutting release: v{0}";
+    private String preTagCommitMessage = "[release] cutting release of {1}: {0}";
     private String tagFormat = "v{0}";
-    private String nextSnapshotCommitMessage = "[release] bumping version: v{0}";
+    private String nextSnapshotCommitMessage = "[release] bumping version of {1}: {0}";
     private boolean usingSnapshots = true;
     private boolean ensureWorkspaceClean = true;
 
@@ -19,14 +19,17 @@ public class ReleaseConvention {
         this.project = project;
     }
 
-    public void propertiesFile(final String path) {
-        this.propertiesFile = path;
+    public void propertiesFile(final Object path) {
+        this.propertiesFile = project.file(path);
     }
 
-    public String getPropertiesFile() {
-        final File file = project.file(propertiesFile);
-        if (!file.exists()) {
-            throw new IllegalStateException(file + " does not exist");
+    public File getPropertiesFile() {
+        if (propertiesFile == null) {
+            propertiesFile = project.file("gradle.properties");
+        }
+
+        if (!propertiesFile.exists()) {
+            throw new IllegalStateException(propertiesFile.getAbsolutePath() + " does not exist");
         }
         return propertiesFile;
     }

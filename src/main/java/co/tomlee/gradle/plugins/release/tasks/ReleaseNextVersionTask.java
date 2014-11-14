@@ -40,7 +40,7 @@ public class ReleaseNextVersionTask extends DefaultTask {
 
         if (git.status().call().hasUncommittedChanges()) {
             final String commitMessage =
-                    MessageFormat.format(releaseConvention.getNextVersionCommitMessageFormat(), nextVersion);
+                    MessageFormat.format(releaseConvention.getNextVersionCommitMessageFormat(), nextVersion, getProject().getName(), getProject().getPath());
             commitPropertiesFile(getProject(), commitMessage);
         }
     }
