@@ -20,7 +20,7 @@ Only supports Git right now.
         }
 
         dependencies {
-            classpath 'co.tomlee.gradle.plugins:gradle-release-plugin:0.0.1'
+            classpath 'co.tomlee.gradle.plugins:gradle-release-plugin:0.0.6'
         }
     }
 
