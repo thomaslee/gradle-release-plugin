@@ -22,7 +22,15 @@ public class ReleaseRollbackTransactionTask extends DefaultTask {
 
     @TaskAction
     public void rollback() throws Exception {
-        final Git git = git(getProject());
+        final Git git = new Git(repository(getProject()));
+        try {
+            doRollback(git);
+        } finally {
+            git.close();
+        }
+    }
+
+    private void doRollback(final Git git) throws Exception {
         final Repository repo = repository(getProject());
         final ReleaseConvention releaseConvention = releaseConvention(getProject());
 

@@ -16,15 +16,19 @@ public class ReleaseEnsureCleanWorkspaceTask extends DefaultTask {
     private static final Logger log = Logging.getLogger(ReleaseEnsureCleanWorkspaceTask.class);
 
     @TaskAction
-    public void release() throws Exception {
+    public void ensureCleanWorkspace() throws Exception {
         final ReleaseConvention releaseConvention = releaseConvention(getProject());
 
         if (releaseConvention.isEnsureWorkspaceClean()) {
             final Repository repo = repository(getProject());
             final Git git = new Git(repo);
-
-            if (git.status().call().hasUncommittedChanges()) {
-                throw new ReleaseException("The working tree has uncommitted changes");
+            try {
+                if (git.status().call().hasUncommittedChanges()) {
+                    throw new ReleaseException("The working tree has uncommitted changes");
+                }
+            }
+            finally {
+                git.close();
             }
         }
         else {

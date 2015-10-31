@@ -13,8 +13,12 @@ public class ReleaseTagTask extends DefaultTask {
     @TaskAction
     public void tag() throws Exception {
         final ReleaseConvention releaseConvention = releaseConvention(getProject());
-        final Git git = git(getProject());
-
-        git.tag().setName(MessageFormat.format(releaseConvention.getTagFormat(), getVersion(getProject()))).call();
+        final Git git = new Git(repository(getProject()));
+        try {
+            git.tag().setName(MessageFormat.format(releaseConvention.getTagFormat(), getVersion(getProject()))).call();
+        }
+        finally {
+            git.close();
+        }
     }
 }

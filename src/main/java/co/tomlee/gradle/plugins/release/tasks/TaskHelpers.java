@@ -1,12 +1,14 @@
 package co.tomlee.gradle.plugins.release.tasks;
 
 import co.tomlee.gradle.plugins.release.ReleaseConvention;
+import co.tomlee.gradle.plugins.release.ReleaseException;
 import co.tomlee.gradle.plugins.release.ReleasePlugin;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 
@@ -82,22 +84,33 @@ public final class TaskHelpers {
         }
     }
 
-    public static Repository repository(final Project project) {
-        return (Repository) project.getExtensions().getByName(ReleasePlugin.GIT_REPO_PROPERTY);
-    }
-
-    public static Git git(final Project project) {
-        return (Git) project.getExtensions().getByName(ReleasePlugin.GIT_PROPERTY);
-    }
-
     public static void commitPropertiesFile(final Project project, final String commitMessage) throws Exception {
-        final Git git = git(project);
-        final ReleaseConvention releaseConvention = releaseConvention(project);
-        final File propertiesFile = releaseConvention.getPropertiesFile();
-        final Path relativePath = project.getRootDir().toPath().relativize(propertiesFile.toPath());
-        git.commit()
+        final Git git = new Git(repository(project));
+        try {
+            final ReleaseConvention releaseConvention = releaseConvention(project);
+            final File propertiesFile = releaseConvention.getPropertiesFile();
+            final Path relativePath = project.getRootDir().toPath().relativize(propertiesFile.toPath());
+            git.commit()
                 .setOnly(relativePath.toString())
                 .setMessage(commitMessage)
                 .call();
+        }
+        finally {
+            git.close();
+        }
+    }
+
+    public static Repository repository(final Project project) {
+        try {
+            final File projectDir = project.getProjectDir();
+            final FileRepositoryBuilder repoBuilder = new FileRepositoryBuilder().readEnvironment().findGitDir(projectDir);
+            if (repoBuilder.getGitDir() == null) {
+                throw new ReleaseException("No git directory found!");
+            }
+            return repoBuilder.build();
+        }
+        catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

@@ -11,7 +11,7 @@ import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.*;
 
 public class ReleaseVersionTask extends DefaultTask {
     @TaskAction
-    public void removeSnapshotSuffix() throws Exception {
+    public void releaseVersion() throws Exception {
         String version = getVersion(getProject());
         final String commitVersion;
         if (version.endsWith("-SNAPSHOT")) {
@@ -22,12 +22,17 @@ public class ReleaseVersionTask extends DefaultTask {
         }
         setVersion(getProject(), commitVersion);
 
-        final Git git = git(getProject());
-        if (git.status().call().hasUncommittedChanges()) {
-            final ReleaseConvention releaseConvention = releaseConvention(getProject());
-            final String commitMessage =
-                MessageFormat.format(releaseConvention.getThisVersionCommitMessageFormat(), commitVersion, getProject().getName(), getProject().getPath());
-            commitPropertiesFile(getProject(), commitMessage);
+        final Git git = new Git(repository(getProject()));
+        try {
+            if (git.status().call().hasUncommittedChanges()) {
+                final ReleaseConvention releaseConvention = releaseConvention(getProject());
+                final String commitMessage =
+                    MessageFormat.format(releaseConvention.getThisVersionCommitMessageFormat(), commitVersion, getProject().getName(), getProject().getPath());
+                commitPropertiesFile(getProject(), commitMessage);
+            }
+        }
+        finally {
+            git.close();
         }
     }
 }

@@ -12,12 +12,12 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 
 import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.getVersionWithoutSnapshot;
-import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.git;
+import static co.tomlee.gradle.plugins.release.tasks.TaskHelpers.repository;
 
 public class ReleaseBeginTransactionTask extends DefaultTask {
     @TaskAction
-    public void tag() throws Exception {
-        final Git git = git(getProject());
+    public void beginTransaction() throws Exception {
+        final Git git = new Git(repository(getProject()));
 
         final Repository repository = git.getRepository();
         if (repository == null) {

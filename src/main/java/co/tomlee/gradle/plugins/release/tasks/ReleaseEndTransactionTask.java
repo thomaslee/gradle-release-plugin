@@ -14,12 +14,17 @@ public class ReleaseEndTransactionTask extends DefaultTask {
     private final Logger log = Logging.getLogger(ReleaseEndTransactionTask.class);
 
     @TaskAction
-    public void removeTag() throws Exception {
-        final Git git = git(getProject());
-        final File transactionFile =
-            new File(git.getRepository().getDirectory().getParentFile(), ".releaseTransaction");
-        if (transactionFile.exists() && !transactionFile.delete()) {
-            log.error("Failed to delete transaction file: " + transactionFile);
+    public void endTransaction() throws Exception {
+        final Git git = new Git(repository(getProject()));
+        try {
+            final File transactionFile =
+                new File(git.getRepository().getDirectory().getParentFile(), ".releaseTransaction");
+            if (transactionFile.exists() && !transactionFile.delete()) {
+                log.error("Failed to delete transaction file: " + transactionFile);
+            }
+        }
+        finally {
+            git.close();
         }
     }
 }

@@ -36,12 +36,16 @@ public class ReleaseNextVersionTask extends DefaultTask {
         }
         setVersion(getProject(), nextVersion);
 
-        final Git git = git(getProject());
-
-        if (git.status().call().hasUncommittedChanges()) {
-            final String commitMessage =
+        final Git git = new Git(repository(getProject()));
+        try {
+            if (git.status().call().hasUncommittedChanges()) {
+                final String commitMessage =
                     MessageFormat.format(releaseConvention.getNextVersionCommitMessageFormat(), nextVersion, getProject().getName(), getProject().getPath());
-            commitPropertiesFile(getProject(), commitMessage);
+                commitPropertiesFile(getProject(), commitMessage);
+            }
+        }
+        finally {
+            git.close();
         }
     }
 }
